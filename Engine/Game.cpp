@@ -20,11 +20,16 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
+#include <chrono>
+#include "RabbitPen.h"
+#include <random>
 
-Game::Game( MainWindow& wnd )
+Game::Game(MainWindow& wnd)
 	:
-	wnd( wnd ),
-	gfx( wnd )
+	wnd(wnd),
+	gfx(wnd),
+	rabbitpen(gfx),
+	rng (std::random_device()())
 {
 }
 
@@ -42,4 +47,15 @@ void Game::UpdateModel()
 
 void Game::ComposeFrame()
 {
+	std::uniform_int_distribution<int> cdist(0, 255);
+
+	for (int y = 0; y < rabbitpen.GetPenHeight(); y++)
+	{
+		for (int x = 0; x < rabbitpen.GetPenWidth(); x++)
+		{
+			Location loc = { x, y };
+			Color c(cdist(rng), cdist(rng), cdist(rng));
+			rabbitpen.DrawPen(loc, c);
+		}
+	}
 }
