@@ -41,25 +41,30 @@ void Game::Go()
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
+	Sleep(2000);
 }
 
 void Game::UpdateModel()
 {
-	rabbit.Move(NewLocation());
+	for (int i = 0; i < number_of_rabbits; i++)
+	{
+	rabbit[i].Move(NewLocation(i));
+
+	}
 }
 
 void Game::ComposeFrame()
 {
 	std::uniform_int_distribution<int> cdist(0, 255);
 	Location loc = { 20,20 };
-
-	rabbit.DrawBunny(rabbitpen);
+	for (int i = 0; i < number_of_rabbits; i++)
+	rabbit[i].DrawBunny(rabbitpen);
 }
 
-Location Game::NewLocation()
+Location Game::NewLocation(int i )
 {
 	Location nextloc, locholder;
-	locholder = rabbit.GetLoc();
+	locholder = rabbit[i].GetLoc();
 	std::uniform_int_distribution<int> newloc(1, 4);
 	switch (newloc(rng))
 	{

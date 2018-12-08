@@ -41,7 +41,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	Location NewLocation();
+	Location NewLocation(int i);
 	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
 	/********************************/
 private:
@@ -52,6 +52,9 @@ private:
 	/********************************/
 	RabbitPen rabbitpen;
 	std::mt19937 rng;
-	Rabbit rabbit;
-
+	static constexpr int MaxRabbits = 5;
+	int number_of_rabbits = 5;
+	Rabbit rabbit[MaxRabbits];
+	bool Step = true;
+	bool Break = true;
 };

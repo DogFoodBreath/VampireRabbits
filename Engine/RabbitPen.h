@@ -6,9 +6,9 @@ class RabbitPen
 public:
 	RabbitPen(Graphics& gfx);
 	void DrawPen(Location& loc, Color c);
-	const int GetCellDimension() const;
-	const int GetPenWidth() const;
-	const int GetPenHeight() const;
+	static const int GetCellDimension();
+	static const int GetPenWidth();
+	static const int GetPenHeight();
 
 
 private:

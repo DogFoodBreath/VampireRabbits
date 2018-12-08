@@ -2,10 +2,13 @@
 #include "Location.h"
 #include "RabbitPen.h"
 
+#include <random>
+
 class Rabbit
 {
 public:
 	Rabbit();
+//	Rabbit(Location& momloc);
 	 ///////////////////////
 	/*   Getter funcs    */
    ///////////////////////

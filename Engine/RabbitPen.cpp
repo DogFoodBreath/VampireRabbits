@@ -11,16 +11,16 @@ void RabbitPen::DrawPen(Location & loc, Color c)
 	gfx.DrawRectDim(loc.x*CellDimension, loc.y*CellDimension, CellDimension, CellDimension, c);
 }
 
-const int RabbitPen::GetCellDimension() const
+const int RabbitPen::GetCellDimension()
 {
 	return CellDimension;
 }
 
-const int RabbitPen::GetPenWidth() const
+const int RabbitPen::GetPenWidth()
 {
 	return PenWidth;
 }
-const int RabbitPen::GetPenHeight() const
+const int RabbitPen::GetPenHeight()
 {
 	return PenHeight;
 }

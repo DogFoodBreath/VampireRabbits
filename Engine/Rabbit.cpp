@@ -2,13 +2,52 @@
 
 Rabbit::Rabbit()
 {
+	/*isMale = true;
+	isVampire = false;
 	loc.x = 20;
 	loc.y = 20;
-	age = 3;
-	isVampire = false;
-	isMale = true;
+	age = 1;*/
+	std::random_device rd;
+	//std::mt19937 rng(rd());
+	std::uniform_int_distribution<int> gender(1, 100);
+	if (gender(rd) >= 50)
+	{
+		isMale = true;
+	}
+	else isMale = false;
+	std::uniform_int_distribution<int> xydist(1, RabbitPen::GetPenWidth());
+	loc.x = xydist(rd);
+	loc.y = xydist(rd);
+	age = 0;
+	if (gender(rd) <= 5)
+	{
+		isVampire = true;
+	}
+	else isVampire = false;
+
 	isdead = false;
 }
+
+
+/*Rabbit::Rabbit(Location& momloc)
+{
+	loc.x = momloc.x + 1;
+	loc.y = momloc.y;
+	std::mt19937 rng;
+	std::uniform_int_distribution<int> gender(1, 100);
+	if (gender(rng) >= 50)
+	{
+		isMale = true;
+	}
+	else isMale = false;
+	if (gender(rng) <= 5)
+	{
+		isVampire = true;
+	}
+	else isVampire = false;
+
+	isdead = false;
+}*/
 
 
 
