@@ -20,8 +20,10 @@
  ******************************************************************************************/
 #include "MainWindow.h"
 #include "Game.h"
-#include <chrono>
 #include "RabbitPen.h"
+#include "Rabbit.h"
+
+#include <chrono>
 #include <random>
 
 Game::Game(MainWindow& wnd)
@@ -43,19 +45,76 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	rabbit.Move(NewLocation());
 }
 
 void Game::ComposeFrame()
 {
 	std::uniform_int_distribution<int> cdist(0, 255);
+	Location loc = { 20,20 };
 
-	for (int y = 0; y < rabbitpen.GetPenHeight(); y++)
+	rabbit.DrawBunny(rabbitpen);
+}
+
+Location Game::NewLocation()
+{
+	Location nextloc, locholder;
+	locholder = rabbit.GetLoc();
+	std::uniform_int_distribution<int> newloc(1, 4);
+	switch (newloc(rng))
 	{
-		for (int x = 0; x < rabbitpen.GetPenWidth(); x++)
+	case (1):
+		nextloc = { -1,0 };
+		if (!IsInPen(locholder, nextloc, rabbitpen))
 		{
-			Location loc = { x, y };
-			Color c(cdist(rng), cdist(rng), cdist(rng));
-			rabbitpen.DrawPen(loc, c);
+			nextloc = { 0,0 };
 		}
+		return nextloc;
+		break;
+	case (2):
+		nextloc = { 1,0 };
+		if (!IsInPen(locholder, nextloc, rabbitpen))
+		{
+			nextloc = { 0,0 };
+		}
+		return nextloc;
+		break;
+	case (3):
+		nextloc = { 0, -1 };
+		if (!IsInPen(locholder, nextloc, rabbitpen))
+		{
+			nextloc = { 0,0 };
+		}
+		return nextloc;
+		break;
+	case (4):
+		nextloc = { 0,1 };
+		if (!IsInPen(locholder, nextloc, rabbitpen))
+		{
+			nextloc = { 0,0 };
+		}
+		return nextloc;
+		break;
+	}
+
+	
+}
+bool Game::IsInPen(Location& loc, Location& next_loc, RabbitPen& pen)
+{
+	{
+		Location testloc = { loc.x + next_loc.x, loc.y + next_loc.y };
+		if (testloc.x < 0 ||
+			testloc.y < 0 ||
+			testloc.x >= pen.GetPenWidth() ||
+			testloc.y >= pen.GetPenHeight() )
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+
 	}
 }
+

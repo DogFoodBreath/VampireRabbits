@@ -147,6 +147,7 @@
     <ClInclude Include="Location.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="Mouse.h" />
+    <ClInclude Include="Rabbit.h" />
     <ClInclude Include="RabbitPen.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Sound.h" />
@@ -161,6 +162,7 @@
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="MainWindow.cpp" />
     <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="Rabbit.cpp" />
     <ClCompile Include="RabbitPen.cpp" />
     <ClCompile Include="Sound.cpp" />
   </ItemGroup>

@@ -24,6 +24,9 @@
 #include "Mouse.h"
 #include "Graphics.h"
 #include "RabbitPen.h"
+#include "Location.h"
+#include "Rabbit.h"
+
 #include <random>
 
 class Game
@@ -38,6 +41,8 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
+	Location NewLocation();
+	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -47,5 +52,6 @@ private:
 	/********************************/
 	RabbitPen rabbitpen;
 	std::mt19937 rng;
+	Rabbit rabbit;
 
 };
