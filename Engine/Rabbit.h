@@ -16,6 +16,8 @@ public:
 	const bool IsInfected() const;
 	const int getAge() const;
 	const Location GetLoc() const;
+	void KillTheRabbit();
+	void RabbitAgeIncrementer();
 
 	  //////////////////////////////////
 	 /*      Main member functions   */

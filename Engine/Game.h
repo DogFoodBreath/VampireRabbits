@@ -44,6 +44,8 @@ private:
 	Location NewLocation(int i);
 	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
 	void Rabbit_Sortby_Age();
+	bool CellIsOccupied(Rabbit& testRabbit) const;
+	void RabbitAgeIncrementer();
 	/********************************/
 private:
 	MainWindow& wnd;

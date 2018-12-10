@@ -51,6 +51,7 @@ void Game::UpdateModel()
 	{
 	rabbit[i].Move(NewLocation(i));
 	}
+	RabbitAgeIncrementer();
 }
 
 void Game::ComposeFrame()
@@ -148,3 +149,16 @@ void Game::Rabbit_Sortby_Age()
 	}
 }
 
+void Game::RabbitAgeIncrementer()
+{
+	for (int i = 0; i < number_of_rabbits; i++)
+	{
+		rabbit[i].RabbitAgeIncrementer();
+		if (rabbit[i].getAge() > 10)
+		{
+			rabbit[i].KillTheRabbit();
+			number_of_rabbits -= 1;
+		}
+	}
+
+}

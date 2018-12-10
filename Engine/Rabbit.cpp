@@ -9,20 +9,20 @@ Rabbit::Rabbit()
 	loc.y = 20;
 	age = 1;*/
 
-	std::default_random_engine rd(time(NULL));
-	//std::mt19937 rng(rd());
+	//std::default_random_engine rd(time(NULL));
+	std::mt19937 rng(time(0));
 	std::uniform_int_distribution<int> gender(1, 100);
-	if (gender(rd) >= 50)
+	if (gender(rng) >= 50)
 	{
 		isMale = true;
 	}
 	else isMale = false;
 	std::uniform_int_distribution<int> xdist(1, RabbitPen::GetPenWidth());
 	std::uniform_int_distribution<int> ydist(1, RabbitPen::GetPenHeight());
-	loc.x = xdist(rd);
-	loc.y = ydist(rd);
+	loc.x = xdist(rng);
+	loc.y = ydist(rng);
 	age = 0;
-	if (gender(rd) <= 5)
+	if (gender(rng) <= 5)
 	{
 		isVampire = true;
 	}
@@ -74,6 +74,16 @@ const int Rabbit::getAge() const
 const Location Rabbit::GetLoc() const
 {
 	return loc;
+}
+
+void Rabbit::KillTheRabbit()
+{
+	age = 1000;
+}
+
+void Rabbit::RabbitAgeIncrementer()
+{
+	age += 1;
 }
 
 
