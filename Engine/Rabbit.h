@@ -8,7 +8,7 @@ class Rabbit
 {
 public:
 	Rabbit();
-//	Rabbit(Location& momloc);
+	Rabbit(Location& momloc);
 	 ///////////////////////
 	/*   Getter funcs    */
    ///////////////////////
@@ -23,7 +23,6 @@ public:
 	void DrawBunny(RabbitPen& rabbitpen);
 	void isDead();
 	void Move(Location& new_loc);
-	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
 private:
 	Location loc;
 	bool isMale;

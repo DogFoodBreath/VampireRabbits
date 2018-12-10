@@ -46,10 +46,10 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
+	Rabbit_Sortby_Age();
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
 	rabbit[i].Move(NewLocation(i));
-
 	}
 }
 
@@ -58,7 +58,9 @@ void Game::ComposeFrame()
 	std::uniform_int_distribution<int> cdist(0, 255);
 	Location loc = { 20,20 };
 	for (int i = 0; i < number_of_rabbits; i++)
-	rabbit[i].DrawBunny(rabbitpen);
+	{
+		rabbit[i].DrawBunny(rabbitpen);
+	}
 }
 
 Location Game::NewLocation(int i )
@@ -100,6 +102,10 @@ Location Game::NewLocation(int i )
 		}
 		return nextloc;
 		break;
+	default:
+		nextloc = { 0,0 };
+		return nextloc;
+		break;
 	}
 
 	
@@ -118,6 +124,25 @@ bool Game::IsInPen(Location& loc, Location& next_loc, RabbitPen& pen)
 		else
 		{
 			return true;
+		}
+
+	}
+}
+
+void Game::Rabbit_Sortby_Age()
+{
+	Rabbit temprabbit;
+	for (int j = 0; j < number_of_rabbits; j++)
+	{
+		for (int i = 0; i < number_of_rabbits; i++)
+		{
+			if (rabbit[i].getAge() > rabbit[i + 1].getAge())
+			{
+				temprabbit = rabbit[i];
+				rabbit[i] = rabbit[2];
+				rabbit[2] = temprabbit;
+			
+			}
 		}
 
 	}

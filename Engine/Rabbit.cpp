@@ -1,4 +1,5 @@
 #include "Rabbit.h"
+#include <ctime>
 
 Rabbit::Rabbit()
 {
@@ -7,7 +8,8 @@ Rabbit::Rabbit()
 	loc.x = 20;
 	loc.y = 20;
 	age = 1;*/
-	std::random_device rd;
+
+	std::default_random_engine rd(time(NULL));
 	//std::mt19937 rng(rd());
 	std::uniform_int_distribution<int> gender(1, 100);
 	if (gender(rd) >= 50)
@@ -15,9 +17,10 @@ Rabbit::Rabbit()
 		isMale = true;
 	}
 	else isMale = false;
-	std::uniform_int_distribution<int> xydist(1, RabbitPen::GetPenWidth());
-	loc.x = xydist(rd);
-	loc.y = xydist(rd);
+	std::uniform_int_distribution<int> xdist(1, RabbitPen::GetPenWidth());
+	std::uniform_int_distribution<int> ydist(1, RabbitPen::GetPenHeight());
+	loc.x = xdist(rd);
+	loc.y = ydist(rd);
 	age = 0;
 	if (gender(rd) <= 5)
 	{
@@ -29,11 +32,11 @@ Rabbit::Rabbit()
 }
 
 
-/*Rabbit::Rabbit(Location& momloc)
+Rabbit::Rabbit(Location& momloc)
 {
 	loc.x = momloc.x + 1;
 	loc.y = momloc.y;
-	std::mt19937 rng;
+	std::mt19937 rng(time(0));
 	std::uniform_int_distribution<int> gender(1, 100);
 	if (gender(rng) >= 50)
 	{
@@ -47,7 +50,7 @@ Rabbit::Rabbit()
 	else isVampire = false;
 
 	isdead = false;
-}*/
+}
 
 
 

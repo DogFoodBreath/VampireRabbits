@@ -43,6 +43,7 @@ private:
 	/*  User Functions              */
 	Location NewLocation(int i);
 	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
+	void Rabbit_Sortby_Age();
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -52,9 +53,7 @@ private:
 	/********************************/
 	RabbitPen rabbitpen;
 	std::mt19937 rng;
-	static constexpr int MaxRabbits = 5;
+	static constexpr int MaxRabbits = 100;
 	int number_of_rabbits = 5;
 	Rabbit rabbit[MaxRabbits];
-	bool Step = true;
-	bool Break = true;
 };
