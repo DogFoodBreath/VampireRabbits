@@ -8,11 +8,17 @@ public:
 	{
 		return loc;
 	}
-	bool operator==(const Location& rhs) const
+	bool Location::operator==(const Location& rhs) const
 	{
 		return x == rhs.x && y == rhs.y;
 	}
-
+	Location Location::operator=(const Location& rhs) const
+	{
+		Location lhs;
+		lhs.x = rhs.x;
+		lhs.y = rhs.y;
+		return lhs;
+	}
 	int x;
 	int y;
 };

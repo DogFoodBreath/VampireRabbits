@@ -34,26 +34,48 @@ void Rabbit::RabbitInitial(std::mt19937& rng)
 }
 
 
-Rabbit::Rabbit(Location& momloc, std::mt19937& rng)
+Rabbit::Rabbit(Rabbit& momrabbit, Rabbit& newrabbit, std::mt19937& rng)
 {
-	loc.x = momloc.x + 1;
-	loc.y = momloc.y;
-
+	newrabbit.loc.x = momrabbit.loc.x;
+	newrabbit.loc.y = momrabbit.loc.y;
+	std::uniform_int_distribution<int> locdist(1, 100);
+	int locdistconst = locdist(rng);
+	if (locdistconst <= 25)
+	{
+		newrabbit.loc.x += 1;
+	}
+	else if (locdistconst <= 50)
+	{
+		newrabbit.loc.x -= 1;
+	}
+	else if (locdistconst <= 75)
+	{
+		newrabbit.loc.y += 1;
+	}
+	else
+	{
+		newrabbit.loc.y -= 1;
+	}
 	std::uniform_int_distribution<int> gender(1, 100);
 	std::uniform_int_distribution<int> isVamp(1, 100);
-
 	if (gender(rng) >= 50)
 	{
-		isMale = true;
+		newrabbit.isMale = true;
 	}
-	else isMale = false;
+	else
+	{
+		newrabbit.isMale = false;
+	}
 	if (isVamp(rng) <= 5)
 	{
-		isVampire = true;
+		newrabbit.isVampire = true;
 	}
-	else isVampire = false;
-
-	isdead = false;
+	else newrabbit.isVampire = false;
+	{
+	newrabbit.isdead = false;
+	}
+	momrabbit.didSheBreed = true;
+	newrabbit.age = 0;
 }
 
 
@@ -131,15 +153,13 @@ void Rabbit::Move(Location& new_loc)
 	
 }
 
-void Rabbit::isDead()
-{
-	if (age > 10)
-	{
-		isdead = true;
-	}
-	else
-	{
-		isdead = false;
-	}
 
+void Rabbit::ResetForBreeding()
+{
+	didSheBreed = false;
+}
+
+bool Rabbit::DidSheBreed()
+{
+	return didSheBreed;
 }

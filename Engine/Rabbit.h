@@ -9,7 +9,7 @@ class Rabbit
 public:
 	Rabbit();
 	void RabbitInitial(std::mt19937& rng);
-	Rabbit(Location& momloc, std::mt19937& rng);
+	Rabbit(Rabbit& momrabbit, Rabbit& newrabbit,  std::mt19937& rng);
 	 ///////////////////////
 	/*   Getter funcs    */
    ///////////////////////
@@ -19,6 +19,8 @@ public:
 	const Location GetLoc() const;
 	void KillTheRabbit();
 	void RabbitAgeIncrementer();
+	void ResetForBreeding();
+	bool DidSheBreed();
 
 	  //////////////////////////////////
 	 /*      Main member functions   */
@@ -32,4 +34,5 @@ private:
 	bool isVampire;
 	int age;
 	bool isdead;
+	bool didSheBreed = false;
 };

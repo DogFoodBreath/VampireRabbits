@@ -26,6 +26,7 @@
 #include "RabbitPen.h"
 #include "Location.h"
 #include "Rabbit.h"
+#include "SpriteCodex.h"
 
 #include <random>
 
@@ -45,8 +46,8 @@ private:
 	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
 	void Rabbit_Sortby_Age();
 	const bool CellIsEmpty(const Location& rabbit,const Location& delta) const;
-	void RabbitAgeIncrementer();
-	const bool BreedingTest(Rabbit& testrabbit) const;
+	void KillOldRabbits();
+	void BreedingTest(Rabbit& testrabbit);
 	/********************************/
 private:
 	MainWindow& wnd;
@@ -56,7 +57,10 @@ private:
 	/********************************/
 	RabbitPen rabbitpen;
 	std::mt19937 rng;
-	static constexpr int MaxRabbits = 100;
-	int number_of_rabbits = 5;
+	static constexpr int MaxRabbits = 1000;
+	int number_of_rabbits = 30;
 	Rabbit rabbit[MaxRabbits];
+	int maxAge = 10;
+	bool isGameOver = false;
+	SpriteCodex Sprite;
 };

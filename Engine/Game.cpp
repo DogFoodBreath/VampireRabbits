@@ -22,6 +22,8 @@
 #include "Game.h"
 #include "RabbitPen.h"
 #include "Rabbit.h"
+#include "SpriteCodex.h"
+
 
 #include <chrono>
 #include <random>
@@ -50,69 +52,92 @@ void Game::Go()
 
 void Game::UpdateModel()
 {
-	Rabbit_Sortby_Age();
-	for (int i = 0; i < number_of_rabbits; i++)
+	if (!isGameOver)
 	{
-		Location newloc = NewLocation(i);
-		if (CellIsEmpty(rabbit[i].GetLoc(), newloc))
+
+		for (int i = 0; i < number_of_rabbits; i++)
 		{
-		rabbit[i].Move(NewLocation(i));
+			BreedingTest(rabbit[i]);
+			Location newloc = NewLocation(i);
+			if (CellIsEmpty(rabbit[i].GetLoc(), newloc))
+			{
+				rabbit[i].Move(NewLocation(i));
+			}
+			rabbit[i].ResetForBreeding();
+			rabbit[i].RabbitAgeIncrementer();
 		}
+		KillOldRabbits();
 	}
-	RabbitAgeIncrementer();
+	if (number_of_rabbits <= 0)
+	{
+		isGameOver = true;
+	}
+
 }
 
 void Game::ComposeFrame()
 {
-	std::uniform_int_distribution<int> cdist(0, 255);
-	Location loc = { 20,20 };
-	for (int i = 0; i < number_of_rabbits; i++)
-	{
-		rabbit[i].DrawBunny(rabbitpen);
+	if (!isGameOver)
+	{	
+		for (int i = 0; i < number_of_rabbits; i++)
+		{
+			rabbit[i].DrawBunny(rabbitpen);
+		}
 	}
+	else SpriteCodex::DrawGameOver(300,200,gfx);
 }
 
 Location Game::NewLocation(int i )
 {
 	Location nextloc, locholder;
-	locholder = rabbit[i].GetLoc();
+	locholder.x = rabbit[i].GetLoc().x;
+	locholder.y = rabbit[i].GetLoc().y;
 	std::uniform_int_distribution<int> newloc(1, 4);
 	switch (newloc(rng))
 	{
 	case (1):
-		nextloc = { -1,0 };
+		nextloc.x = -1;
+		nextloc.y = 0;
 		if (!IsInPen(locholder, nextloc, rabbitpen))
 		{
-			nextloc = { 0,0 };
+			nextloc.x = 0;
+			nextloc.y = 0;
 		}
 		return nextloc;
 		break;
 	case (2):
-		nextloc = { 1,0 };
+		nextloc.x = 1;
+		nextloc.y = 0;
 		if (!IsInPen(locholder, nextloc, rabbitpen))
 		{
-			nextloc = { 0,0 };
+			nextloc.x = 0;
+			nextloc.y = 0;
 		}
 		return nextloc;
 		break;
 	case (3):
-		nextloc = { 0, -1 };
+		nextloc.x = 0;
+		nextloc.y = -1;
 		if (!IsInPen(locholder, nextloc, rabbitpen))
 		{
-			nextloc = { 0,0 };
+			nextloc.x = 0;
+			nextloc.y = 0;
 		}
 		return nextloc;
 		break;
 	case (4):
-		nextloc = { 0,1 };
+		nextloc.x = 0;
+		nextloc.y = 1;
 		if (!IsInPen(locholder, nextloc, rabbitpen))
-		{
-			nextloc = { 0,0 };
+		{			
+			nextloc.x = 0;
+			nextloc.y = 0;
 		}
 		return nextloc;
 		break;
 	default:
-		nextloc = { 0,0 };
+		nextloc.x = 0;
+		nextloc.y = 0;
 		return nextloc;
 		break;
 	}
@@ -157,19 +182,20 @@ void Game::Rabbit_Sortby_Age()
 	}
 }
 
-void Game::RabbitAgeIncrementer()
+void Game::KillOldRabbits()
 {
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
-		rabbit[i].RabbitAgeIncrementer();
-		if (rabbit[i].getAge() > 10 && !rabbit[i].IsInfected())
+		if (rabbit[i].getAge() > maxAge && !rabbit[i].IsInfected())
 		{
 			rabbit[i].KillTheRabbit();
+			Rabbit_Sortby_Age();
 			number_of_rabbits -= 1;
 		}
-		else if (rabbit[i].getAge() > 50)
+		else if (rabbit[i].getAge() > 50 && rabbit[i].IsInfected())
 		{
 			rabbit[i].KillTheRabbit();
+			Rabbit_Sortby_Age();
 			number_of_rabbits -= 1;
 		}
 	}
@@ -190,20 +216,34 @@ const bool Game::CellIsEmpty(const Location& rabbitloc,const Location& deltaloc)
 
 }
 
-const bool Game::BreedingTest(Rabbit& testrabbit) const
+void Game::BreedingTest(Rabbit& testrabbit) 
 {
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
-		if ((testrabbit.GetLoc().x + 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
-			(testrabbit.GetLoc().x - 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
-			(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y + 1 == rabbit[i].GetLoc().y) ||
-			(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y - 1 == rabbit[i].GetLoc().y))
+		if (testrabbit.getAge() > 2 && rabbit[i].getAge() > 2)
 		{
-			if (testrabbit.GetGender() != rabbit[i].GetGender() )
+
+			if ((testrabbit.GetLoc().x + 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
+				(testrabbit.GetLoc().x - 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
+				(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y + 1 == rabbit[i].GetLoc().y) ||
+				(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y - 1 == rabbit[i].GetLoc().y))
 			{
-				return true;
+				if (testrabbit.GetGender() != rabbit[i].GetGender() )
+				{
+					if (testrabbit.GetGender() == false && !testrabbit.DidSheBreed())
+					{
+						Rabbit(testrabbit, rabbit[number_of_rabbits], rng);
+						number_of_rabbits++;
+					}
+					else if (!rabbit[i].DidSheBreed())
+					{
+						Rabbit(rabbit[i], rabbit[number_of_rabbits], rng);
+						number_of_rabbits++;
+					}
+					
+				}
 			}
 		}
+
 	}
-	return false;
 }

@@ -16,7 +16,7 @@ private:
 	Location loc;
 	Graphics& gfx;
 
-	static constexpr int PenWidth = 40;
-	static constexpr int PenHeight = 40;
+	static constexpr int PenWidth = 35;
+	static constexpr int PenHeight = 35;
 	static constexpr int CellDimension = 15;
 };
