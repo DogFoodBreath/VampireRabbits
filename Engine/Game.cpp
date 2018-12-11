@@ -33,6 +33,10 @@ Game::Game(MainWindow& wnd)
 	rabbitpen(gfx),
 	rng (std::random_device()())
 {
+	for (int i = 0; i < number_of_rabbits; i++)
+	{
+		rabbit[i].RabbitInitial(rng);
+	}
 }
 
 void Game::Go()
@@ -41,7 +45,7 @@ void Game::Go()
 	UpdateModel();
 	ComposeFrame();
 	gfx.EndFrame();
-	Sleep(2000);
+	Sleep(1000);
 }
 
 void Game::UpdateModel()
@@ -49,7 +53,11 @@ void Game::UpdateModel()
 	Rabbit_Sortby_Age();
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
-	rabbit[i].Move(NewLocation(i));
+		Location newloc = NewLocation(i);
+		if (CellIsEmpty(rabbit[i].GetLoc(), newloc))
+		{
+		rabbit[i].Move(NewLocation(i));
+		}
 	}
 	RabbitAgeIncrementer();
 }
@@ -154,11 +162,48 @@ void Game::RabbitAgeIncrementer()
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
 		rabbit[i].RabbitAgeIncrementer();
-		if (rabbit[i].getAge() > 10)
+		if (rabbit[i].getAge() > 10 && !rabbit[i].IsInfected())
+		{
+			rabbit[i].KillTheRabbit();
+			number_of_rabbits -= 1;
+		}
+		else if (rabbit[i].getAge() > 50)
 		{
 			rabbit[i].KillTheRabbit();
 			number_of_rabbits -= 1;
 		}
 	}
 
+}
+
+const bool Game::CellIsEmpty(const Location& rabbitloc,const Location& deltaloc) const
+{
+	Location newlocation = { rabbitloc.x + deltaloc.x, rabbitloc.y + deltaloc.y };
+	for (int i = 0; i < number_of_rabbits; i++)
+	{
+		if (rabbit[i].GetLoc() == newlocation)
+		{
+			return false;
+		}
+	}
+	return true;
+
+}
+
+const bool Game::BreedingTest(Rabbit& testrabbit) const
+{
+	for (int i = 0; i < number_of_rabbits; i++)
+	{
+		if ((testrabbit.GetLoc().x + 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
+			(testrabbit.GetLoc().x - 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
+			(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y + 1 == rabbit[i].GetLoc().y) ||
+			(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y - 1 == rabbit[i].GetLoc().y))
+		{
+			if (testrabbit.GetGender() != rabbit[i].GetGender() )
+			{
+				return true;
+			}
+		}
+	}
+	return false;
 }

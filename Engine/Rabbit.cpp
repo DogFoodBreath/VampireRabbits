@@ -3,16 +3,17 @@
 
 Rabbit::Rabbit()
 {
-	/*isMale = true;
-	isVampire = false;
-	loc.x = 20;
-	loc.y = 20;
-	age = 1;*/
 
-	//std::default_random_engine rd(time(NULL));
-	std::mt19937 rng(time(0));
+}
+
+void Rabbit::RabbitInitial(std::mt19937& rng) 
+{
+
+
 	std::uniform_int_distribution<int> gender(1, 100);
-	if (gender(rng) >= 50)
+	std::uniform_int_distribution<int> vampDist(1, 100);
+	int rnInt = gender(rng);
+	if (rnInt >= 50)
 	{
 		isMale = true;
 	}
@@ -22,7 +23,8 @@ Rabbit::Rabbit()
 	loc.x = xdist(rng);
 	loc.y = ydist(rng);
 	age = 0;
-	if (gender(rng) <= 5)
+	int rnIntVamp = vampDist(rng);
+	if ( rnIntVamp <= 5)
 	{
 		isVampire = true;
 	}
@@ -32,18 +34,20 @@ Rabbit::Rabbit()
 }
 
 
-Rabbit::Rabbit(Location& momloc)
+Rabbit::Rabbit(Location& momloc, std::mt19937& rng)
 {
 	loc.x = momloc.x + 1;
 	loc.y = momloc.y;
-	std::mt19937 rng(time(0));
+
 	std::uniform_int_distribution<int> gender(1, 100);
+	std::uniform_int_distribution<int> isVamp(1, 100);
+
 	if (gender(rng) >= 50)
 	{
 		isMale = true;
 	}
 	else isMale = false;
-	if (gender(rng) <= 5)
+	if (isVamp(rng) <= 5)
 	{
 		isVampire = true;
 	}

@@ -8,7 +8,8 @@ class Rabbit
 {
 public:
 	Rabbit();
-	Rabbit(Location& momloc);
+	void RabbitInitial(std::mt19937& rng);
+	Rabbit(Location& momloc, std::mt19937& rng);
 	 ///////////////////////
 	/*   Getter funcs    */
    ///////////////////////

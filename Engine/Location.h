@@ -12,6 +12,7 @@ public:
 	{
 		return x == rhs.x && y == rhs.y;
 	}
+
 	int x;
 	int y;
 };
