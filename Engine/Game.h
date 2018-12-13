@@ -42,7 +42,7 @@ private:
 	void UpdateModel();
 	/********************************/
 	/*  User Functions              */
-	Location NewLocation(int i);
+	Location NewLocation(Rabbit& testrabbit);
 	bool IsInPen(Location& loc, Location& next_loc, RabbitPen& pen);
 	void Rabbit_Sortby_Age();
 	const bool CellIsEmpty(const Location& rabbit,const Location& delta) const;
@@ -58,9 +58,11 @@ private:
 	RabbitPen rabbitpen;
 	std::mt19937 rng;
 	static constexpr int MaxRabbits = 1000;
-	int number_of_rabbits = 30;
+	int number_of_rabbits = 100;
+	int number_of_vampires = 0;
+	int vampire_take_over;
 	Rabbit rabbit[MaxRabbits];
-	int maxAge = 10;
+	int maxAge = 25;
 	bool isGameOver = false;
 	SpriteCodex Sprite;
 };

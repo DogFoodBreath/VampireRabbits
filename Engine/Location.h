@@ -12,12 +12,21 @@ public:
 	{
 		return x == rhs.x && y == rhs.y;
 	}
-	Location Location::operator=(const Location& rhs) const
+	bool Location::operator!=(const Location& rhs) const
 	{
-		Location lhs;
-		lhs.x = rhs.x;
-		lhs.y = rhs.y;
-		return lhs;
+		return x != rhs.x || y != rhs.y;
+	}
+	Location& Location::operator=(const Location& rhs)
+	{
+		x = rhs.x;
+		y = rhs.y;
+		return *this;
+	}
+	Location& Location::operator+(const Location& rhs)
+	{
+		x += rhs.x;
+		y += rhs.y;
+		return *this;
 	}
 	int x;
 	int y;

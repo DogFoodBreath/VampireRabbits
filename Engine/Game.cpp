@@ -38,6 +38,10 @@ Game::Game(MainWindow& wnd)
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
 		rabbit[i].RabbitInitial(rng);
+		if (rabbit[i].IsInfected())
+		{
+			number_of_vampires++;
+		}
 	}
 }
 
@@ -58,17 +62,18 @@ void Game::UpdateModel()
 		for (int i = 0; i < number_of_rabbits; i++)
 		{
 			BreedingTest(rabbit[i]);
-			Location newloc = NewLocation(i);
+			Location newloc = NewLocation(rabbit[i]);
 			if (CellIsEmpty(rabbit[i].GetLoc(), newloc))
 			{
-				rabbit[i].Move(NewLocation(i));
+				rabbit[i].Move(newloc);
 			}
 			rabbit[i].ResetForBreeding();
 			rabbit[i].RabbitAgeIncrementer();
 		}
 		KillOldRabbits();
 	}
-	if (number_of_rabbits <= 0)
+	vampire_take_over = number_of_rabbits - number_of_vampires;
+	if (number_of_rabbits <= 0 || number_of_rabbits == number_of_vampires)
 	{
 		isGameOver = true;
 	}
@@ -84,14 +89,25 @@ void Game::ComposeFrame()
 			rabbit[i].DrawBunny(rabbitpen);
 		}
 	}
-	else SpriteCodex::DrawGameOver(300,200,gfx);
+	else SpriteCodex::DrawGameOver(350,300,gfx);
 }
 
-Location Game::NewLocation(int i )
+
+
+
+
+
+
+
+
+
+
+
+
+Location Game::NewLocation(Rabbit& testrabbit)
 {
 	Location nextloc, locholder;
-	locholder.x = rabbit[i].GetLoc().x;
-	locholder.y = rabbit[i].GetLoc().y;
+	locholder = testrabbit.GetLoc();
 	std::uniform_int_distribution<int> newloc(1, 4);
 	switch (newloc(rng))
 	{
@@ -165,17 +181,13 @@ bool Game::IsInPen(Location& loc, Location& next_loc, RabbitPen& pen)
 
 void Game::Rabbit_Sortby_Age()
 {
-	Rabbit temprabbit;
 	for (int j = 0; j < number_of_rabbits; j++)
 	{
-		for (int i = 0; i < number_of_rabbits; i++)
+		for (int i = 0; i < number_of_rabbits-1; i++)
 		{
 			if (rabbit[i].getAge() > rabbit[i + 1].getAge())
 			{
-				temprabbit = rabbit[i];
-				rabbit[i] = rabbit[2];
-				rabbit[2] = temprabbit;
-			
+				std::swap(rabbit[i], rabbit[i + 1]);
 			}
 		}
 
@@ -184,21 +196,23 @@ void Game::Rabbit_Sortby_Age()
 
 void Game::KillOldRabbits()
 {
+	int deadRabbitCounter = 0;
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
 		if (rabbit[i].getAge() > maxAge && !rabbit[i].IsInfected())
 		{
 			rabbit[i].KillTheRabbit();
-			Rabbit_Sortby_Age();
-			number_of_rabbits -= 1;
+			deadRabbitCounter++;
 		}
 		else if (rabbit[i].getAge() > 50 && rabbit[i].IsInfected())
 		{
 			rabbit[i].KillTheRabbit();
-			Rabbit_Sortby_Age();
-			number_of_rabbits -= 1;
+			deadRabbitCounter++;
+			number_of_vampires--;
 		}
 	}
+	Rabbit_Sortby_Age();
+	number_of_rabbits -= deadRabbitCounter;
 
 }
 
@@ -220,30 +234,50 @@ void Game::BreedingTest(Rabbit& testrabbit)
 {
 	for (int i = 0; i < number_of_rabbits; i++)
 	{
-		if (testrabbit.getAge() > 2 && rabbit[i].getAge() > 2)
-		{
-
 			if ((testrabbit.GetLoc().x + 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
 				(testrabbit.GetLoc().x - 1 == rabbit[i].GetLoc().x && testrabbit.GetLoc().y == rabbit[i].GetLoc().y) ||
 				(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y + 1 == rabbit[i].GetLoc().y) ||
 				(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y - 1 == rabbit[i].GetLoc().y))
 			{
-				if (testrabbit.GetGender() != rabbit[i].GetGender() )
+				if (testrabbit.IsInfected() && !rabbit[i].IsInfected())
 				{
-					if (testrabbit.GetGender() == false && !testrabbit.DidSheBreed())
-					{
-						Rabbit(testrabbit, rabbit[number_of_rabbits], rng);
-						number_of_rabbits++;
-					}
-					else if (!rabbit[i].DidSheBreed())
-					{
-						Rabbit(rabbit[i], rabbit[number_of_rabbits], rng);
-						number_of_rabbits++;
-					}
-					
+					rabbit[i].GetInfected();
+					number_of_vampires++;
 				}
+				else if ( (testrabbit.GetGender() != rabbit[i].GetGender() ) && 
+						  (testrabbit.getAge() > 2 && rabbit[i].getAge() > 2) )
+					 {
+						if ( !testrabbit.GetGender() && !testrabbit.DidSheBreed())
+						{
+							Location newlocation = NewLocation(testrabbit);
+							Location testrabbitloc = testrabbit.GetLoc();
+							if (IsInPen(testrabbitloc, newlocation, rabbitpen) && CellIsEmpty(testrabbit.GetLoc(), newlocation))
+							{
+								Rabbit(newlocation, testrabbit, rabbit[number_of_rabbits], rng);
+								if (rabbit[number_of_rabbits].IsInfected())
+								{
+									number_of_vampires++;
+								}
+								number_of_rabbits++;
+							}
+						}
+						else if (!rabbit[i].DidSheBreed())
+						{
+							Location newlocation = NewLocation(rabbit[i]);
+							Location testrabbitloc = rabbit[i].GetLoc();
+							if (IsInPen(testrabbitloc, newlocation, rabbitpen) && CellIsEmpty(rabbit[i].GetLoc(), newlocation))
+							{
+								Rabbit(newlocation, rabbit[i], rabbit[number_of_rabbits], rng);
+								if (rabbit[number_of_rabbits].IsInfected())
+								{
+									number_of_vampires++;
+								}
+								number_of_rabbits++;
+							}
+							
+						}
+					
+					 }
 			}
-		}
-
 	}
 }

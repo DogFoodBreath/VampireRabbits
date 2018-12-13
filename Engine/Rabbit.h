@@ -9,7 +9,7 @@ class Rabbit
 public:
 	Rabbit();
 	void RabbitInitial(std::mt19937& rng);
-	Rabbit(Rabbit& momrabbit, Rabbit& newrabbit,  std::mt19937& rng);
+	Rabbit(Location& newlocation, Rabbit& momrabbit, Rabbit& newrabbit,  std::mt19937& rng);
 	 ///////////////////////
 	/*   Getter funcs    */
    ///////////////////////
@@ -25,8 +25,8 @@ public:
 	  //////////////////////////////////
 	 /*      Main member functions   */
 	///////////////////////////////////
+	void GetInfected();
 	void DrawBunny(RabbitPen& rabbitpen);
-	void isDead();
 	void Move(Location& new_loc);
 private:
 	Location loc;

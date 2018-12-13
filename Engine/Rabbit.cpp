@@ -27,6 +27,7 @@ void Rabbit::RabbitInitial(std::mt19937& rng)
 	if ( rnIntVamp <= 5)
 	{
 		isVampire = true;
+		didSheBreed = true;
 	}
 	else isVampire = false;
 
@@ -34,28 +35,10 @@ void Rabbit::RabbitInitial(std::mt19937& rng)
 }
 
 
-Rabbit::Rabbit(Rabbit& momrabbit, Rabbit& newrabbit, std::mt19937& rng)
+Rabbit::Rabbit(Location& newlocation, Rabbit& momrabbit, Rabbit& newrabbit, std::mt19937& rng)
 {
-	newrabbit.loc.x = momrabbit.loc.x;
-	newrabbit.loc.y = momrabbit.loc.y;
-	std::uniform_int_distribution<int> locdist(1, 100);
-	int locdistconst = locdist(rng);
-	if (locdistconst <= 25)
-	{
-		newrabbit.loc.x += 1;
-	}
-	else if (locdistconst <= 50)
-	{
-		newrabbit.loc.x -= 1;
-	}
-	else if (locdistconst <= 75)
-	{
-		newrabbit.loc.y += 1;
-	}
-	else
-	{
-		newrabbit.loc.y -= 1;
-	}
+	newrabbit.loc = momrabbit.loc + newlocation;
+	
 	std::uniform_int_distribution<int> gender(1, 100);
 	std::uniform_int_distribution<int> isVamp(1, 100);
 	if (gender(rng) >= 50)
@@ -69,18 +52,21 @@ Rabbit::Rabbit(Rabbit& momrabbit, Rabbit& newrabbit, std::mt19937& rng)
 	if (isVamp(rng) <= 5)
 	{
 		newrabbit.isVampire = true;
+		newrabbit.didSheBreed = true;
 	}
-	else newrabbit.isVampire = false;
+	else 
 	{
-	newrabbit.isdead = false;
+		newrabbit.isVampire = false;
 	}
+	newrabbit.isdead = false;
 	momrabbit.didSheBreed = true;
+
 	newrabbit.age = 0;
 }
 
 
 
-  ///////////////////////////////////////////
+  //////////////////////////////////////////
  /*           Getter Functions           */
 //////////////////////////////////////////
 const bool Rabbit::GetGender() const 
@@ -101,22 +87,33 @@ const Location Rabbit::GetLoc() const
 {
 	return loc;
 }
+bool Rabbit::DidSheBreed()
+{
+	return didSheBreed;
+}
+
+
+
+  //////////////////////////////////////////
+ /*           Member Functions           */
+//////////////////////////////////////////
+
 
 void Rabbit::KillTheRabbit()
 {
 	age = 1000;
+	isdead = true;
 }
-
 void Rabbit::RabbitAgeIncrementer()
 {
 	age += 1;
 }
 
-
-
-
 void Rabbit::DrawBunny(RabbitPen & rabbitpen)
 {
+	if (!isdead)
+	{
+
 	if (isVampire)
 	{
 		rabbitpen.DrawPen(loc, Colors::Red);
@@ -143,6 +140,7 @@ void Rabbit::DrawBunny(RabbitPen & rabbitpen)
 		rabbitpen.DrawPen(loc, Colors::Magenta);
 		}
 	}
+	}
 }
 
 void Rabbit::Move(Location& new_loc)
@@ -156,10 +154,14 @@ void Rabbit::Move(Location& new_loc)
 
 void Rabbit::ResetForBreeding()
 {
+	if (!isVampire)
+	{
 	didSheBreed = false;
+	}
 }
 
-bool Rabbit::DidSheBreed()
+void Rabbit::GetInfected()
 {
-	return didSheBreed;
+	isVampire = true;
+	didSheBreed = true;
 }
