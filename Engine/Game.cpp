@@ -48,10 +48,15 @@ Game::Game(MainWindow& wnd)
 void Game::Go()
 {
 	gfx.BeginFrame();	
+	ComposeFrame();
+	Sleep(500);
+	gfx.EndFrame();
+	gfx.BeginFrame();
 	UpdateModel();
 	ComposeFrame();
+	Sleep(500);
 	gfx.EndFrame();
-	Sleep(1000);
+
 }
 
 void Game::UpdateModel()
@@ -61,16 +66,23 @@ void Game::UpdateModel()
 
 		for (int i = 0; i < number_of_rabbits; i++)
 		{
-			BreedingTest(rabbit[i]);
 			Location newloc = NewLocation(rabbit[i]);
 			if (CellIsEmpty(rabbit[i].GetLoc(), newloc))
 			{
 				rabbit[i].Move(newloc);
 			}
+		}
+		for (int i = 0; i < number_of_rabbits; i++)
+		{
+			BreedingTest(rabbit[i]);
+		}
+		for (int i = 0; i < number_of_rabbits; i++)
+		{
 			rabbit[i].ResetForBreeding();
 			rabbit[i].RabbitAgeIncrementer();
 		}
 		KillOldRabbits();
+		//Sleep(500);
 	}
 	vampire_take_over = number_of_rabbits - number_of_vampires;
 	if (number_of_rabbits <= 0 || number_of_rabbits == number_of_vampires)
@@ -204,7 +216,7 @@ void Game::KillOldRabbits()
 			rabbit[i].KillTheRabbit();
 			deadRabbitCounter++;
 		}
-		else if (rabbit[i].getAge() > 50 && rabbit[i].IsInfected())
+		else if (rabbit[i].getAge() > maxVampAge && rabbit[i].IsInfected())
 		{
 			rabbit[i].KillTheRabbit();
 			deadRabbitCounter++;
@@ -239,13 +251,14 @@ void Game::BreedingTest(Rabbit& testrabbit)
 				(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y + 1 == rabbit[i].GetLoc().y) ||
 				(testrabbit.GetLoc().x == rabbit[i].GetLoc().x && testrabbit.GetLoc().y - 1 == rabbit[i].GetLoc().y))
 			{
-				if (testrabbit.IsInfected() && !rabbit[i].IsInfected())
+				if (!testrabbit.IsInfected() && rabbit[i].IsInfected())
 				{
-					rabbit[i].GetInfected();
+					testrabbit.GetInfected();
+					testrabbit.DrawBunny(rabbitpen);
 					number_of_vampires++;
 				}
 				else if ( (testrabbit.GetGender() != rabbit[i].GetGender() ) && 
-						  (testrabbit.getAge() > 2 && rabbit[i].getAge() > 2) )
+						  (testrabbit.getAge() >= 2 && rabbit[i].getAge() >= 2) )
 					 {
 						if ( !testrabbit.GetGender() && !testrabbit.DidSheBreed())
 						{
@@ -254,6 +267,7 @@ void Game::BreedingTest(Rabbit& testrabbit)
 							if (IsInPen(testrabbitloc, newlocation, rabbitpen) && CellIsEmpty(testrabbit.GetLoc(), newlocation))
 							{
 								Rabbit(newlocation, testrabbit, rabbit[number_of_rabbits], rng);
+								rabbit[number_of_rabbits].DrawBunny(rabbitpen);
 								if (rabbit[number_of_rabbits].IsInfected())
 								{
 									number_of_vampires++;
@@ -268,6 +282,7 @@ void Game::BreedingTest(Rabbit& testrabbit)
 							if (IsInPen(testrabbitloc, newlocation, rabbitpen) && CellIsEmpty(rabbit[i].GetLoc(), newlocation))
 							{
 								Rabbit(newlocation, rabbit[i], rabbit[number_of_rabbits], rng);
+								rabbit[number_of_rabbits].DrawBunny(rabbitpen);
 								if (rabbit[number_of_rabbits].IsInfected())
 								{
 									number_of_vampires++;
@@ -280,4 +295,5 @@ void Game::BreedingTest(Rabbit& testrabbit)
 					 }
 			}
 	}
+
 }

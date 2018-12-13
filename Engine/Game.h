@@ -58,11 +58,13 @@ private:
 	RabbitPen rabbitpen;
 	std::mt19937 rng;
 	static constexpr int MaxRabbits = 1000;
-	int number_of_rabbits = 100;
+	int number_of_rabbits = 250;
 	int number_of_vampires = 0;
 	int vampire_take_over;
 	Rabbit rabbit[MaxRabbits];
 	int maxAge = 25;
+	int maxVampAge = 15;
 	bool isGameOver = false;
+	bool didChange = false;
 	SpriteCodex Sprite;
 };

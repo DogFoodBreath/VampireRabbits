@@ -24,7 +24,7 @@ void Rabbit::RabbitInitial(std::mt19937& rng)
 	loc.y = ydist(rng);
 	age = 0;
 	int rnIntVamp = vampDist(rng);
-	if ( rnIntVamp <= 5)
+	if ( rnIntVamp < 5)
 	{
 		isVampire = true;
 		didSheBreed = true;
@@ -49,7 +49,7 @@ Rabbit::Rabbit(Location& newlocation, Rabbit& momrabbit, Rabbit& newrabbit, std:
 	{
 		newrabbit.isMale = false;
 	}
-	if (isVamp(rng) <= 5)
+	if (isVamp(rng) < 5)
 	{
 		newrabbit.isVampire = true;
 		newrabbit.didSheBreed = true;
@@ -133,7 +133,7 @@ void Rabbit::DrawBunny(RabbitPen & rabbitpen)
 	{
 		if (age <= 2)
 		{
-			rabbitpen.DrawPen(loc, Colors::MakeRGB(255, 125, 225));
+			rabbitpen.DrawPen(loc, Colors::MakeRGB(255, 180, 225));
 		}
 		else
 		{
